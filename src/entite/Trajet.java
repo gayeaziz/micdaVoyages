@@ -3,7 +3,7 @@ package entite;
 public class Trajet {
 
     private Long trajetId;
-    private String bus;
+    private Long busId;
     private String villeDepart;
     private String villeArrivee;
     private String dateDepart;
@@ -11,9 +11,9 @@ public class Trajet {
     private int placesTotales;
 
     // Constructeur pour initialiser tous les champs
-    public Trajet(Long trajetId, String bus, String villeDepart, String villeArrivee, String dateDepart, String heureDepart, int placesTotales) {
+    public Trajet(Long trajetId, Long busId, String villeDepart, String villeArrivee, String dateDepart, String heureDepart, int placesTotales) {
         this.trajetId = trajetId;
-        this.bus = bus;
+        this.busId = busId;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
         this.dateDepart = dateDepart;
@@ -33,6 +33,10 @@ public class Trajet {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Trajet(long long1, String string, String string2, String string3, String string4, String string5, int int1) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Long getTrajetId() {
         return trajetId;
     }
@@ -41,12 +45,12 @@ public class Trajet {
         this.trajetId = trajetId;
     }
 
-    public String getBus() {
-        return bus;
+    public Long getBusId() {
+        return busId;
     }
 
     public void setBus(String bus) {
-        this.bus = bus;
+        this.busId = busId;
     }
 
     public String getVilleDepart() {
@@ -95,6 +99,11 @@ public class Trajet {
 
 	public void setPlacesTotales(String placesTotales2) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public void setBusId(Bus busId) {
+		// TODO Auto-generated method stub
+
 	}
 }

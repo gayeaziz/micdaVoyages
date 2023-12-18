@@ -3,10 +3,10 @@ package entite;
 public class Reservation {
 
 	private Long reservationId;
-    private Trajet trajet;
-    private Client client;
-    private int numeroSiege;
-    private boolean paye;
+	private String trajetId;
+    private Client clientId;
+    private String numeroSiege;
+    private String paye;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -14,12 +14,13 @@ public class Reservation {
 
 	}
 	// Constructeurs, getters et setters
+    public Reservation() {}
 
-    public Reservation(Long reservationId, Trajet trajet, Client client,
-                       int numeroSiege, boolean paye) {
+    public Reservation(Long reservationId, String trajetId, Client clientId,
+    		String numeroSiege , String paye) {
         this.reservationId = reservationId;
-        this.trajet = trajet;
-        this.client = client;
+        this.trajetId = trajetId;
+        this.clientId = clientId;
         this.numeroSiege = numeroSiege;
         this.paye = paye;
     }
@@ -32,35 +33,42 @@ public class Reservation {
         this.reservationId = reservationId;
     }
 
-    public Trajet getTrajet() {
-        return trajet;
+    public String getTrajet() {
+        return trajetId;
     }
-
-    public void setTrajet(Trajet trajet) {
-        this.trajet = trajet;
+   
+    public void setTrajetId(String trajetId2) {
+        this.trajetId = trajetId2;
     }
 
     public Client getClient() {
-        return client;
+        return clientId;
     }
 
     public void setClient(Client client) {
-        this.client = client;
+        this.clientId = client;
     }
 
-    public int getNumeroSiege() {
-        return numeroSiege;
-    }
 
-    public void setNumeroSiege(int numeroSiege) {
-        this.numeroSiege = numeroSiege;
-    }
+  
 
-    public boolean isPaye() {
+    public String isPaye() {
         return paye;
     }
 
-    public void setPaye(boolean paye) {
-        this.paye = paye;
+    public void setPaye(String paye2) {
+        this.paye = paye2;
     }
+	public void setNumeroSiege(String numeroSiege2) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setClient(String clientId2) {
+		// TODO Auto-generated method stub
+		
+	}
+	public String getNumeroSiege() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

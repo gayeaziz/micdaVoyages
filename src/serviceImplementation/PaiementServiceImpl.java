@@ -26,7 +26,7 @@ public class PaiementServiceImpl implements ServicePaiement {
         // ...
         return null;
     }
-    
+
     @Override
     public Paiement addPaiement(Paiement paiement) {
         String sql = "INSERT INTO Paiement (codePaiement, methodePaiement) VALUES (?, ?)";
@@ -44,14 +44,57 @@ public class PaiementServiceImpl implements ServicePaiement {
 
     @Override
     public void updatePaiement(Paiement paiement) {
-        // Implémentation pour mettre à jour un paiement dans la base de données
-        // ...
-    }
+    	 String sql = "UPDATE Paiement SET codePaiement = ?, methodePaiement = ? WHERE paiementId = ?";
+         Connection connection = null; // Déclaration de la connexion à l'extérieur du bloc try
+
+	     try {
+	         connection = Databases.getConnection(); // Initialisation de la connexion
+	         // Démarrer une transaction
+	         connection.setAutoCommit(false);
+
+	         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+	             preparedStatement.setString(1, paiement.getCodePaiement());
+	             preparedStatement.setString(2, paiement.getMethodePaiement());
+//	             preparedStatement.setLong(3, paiement.getPaiementId());
+	             preparedStatement.executeUpdate();
+	         }
+
+	         // Valider la transaction
+	         connection.commit();
+	     } catch (SQLException e) {
+	         // En cas d'erreur, annuler la transaction
+	         e.printStackTrace();
+	         try {
+	             if (connection != null) {
+	                 connection.rollback();
+	             }
+	         } catch (SQLException rollbackException) {
+	             rollbackException.printStackTrace();
+	         }
+	     } finally {
+	         // Assurer que la connexion est toujours fermée même en cas d'erreur
+	         try {
+	             if (connection != null) {
+	                 connection.setAutoCommit(true);
+	                 connection.close();
+	             }
+	         } catch (SQLException closeException) {
+	             closeException.printStackTrace();
+	         }
+	     }
+    
+  }
 
     @Override
     public void deletePaiement(Long paiementId) {
-        // Implémentation pour supprimer un paiement de la base de données
-        // ...
+    	String sql = "DELETE FROM Paiement WHERE paiementId = ?";
+        try (Connection connection = Databases.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, paiementId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

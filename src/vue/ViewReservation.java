@@ -1,7 +1,10 @@
 package vue;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,12 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-
 
 import entite.Bus;
 import entite.Client;
@@ -29,7 +30,7 @@ import entite.Trajet;
 import service.ServiceReservation;
 import serviceImplementation.ReservationServiceImpl;
 
-public class ViewReservation extends JFrame {
+public class ViewReservation extends JPanel {
 
     private JTextField textNumeroSiege;
     private JTextField textPaye;
@@ -38,14 +39,14 @@ public class ViewReservation extends JFrame {
     private JTable tableReservations;
     private DefaultTableModel tableModel;
     private List<Reservation> reservationList;
-    
+
     private JButton btnAdd;
     private JButton btnUpdate;
 
     public ViewReservation() {
-        setVisible(true);
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setVisible(true);
+//        setSize(800, 600);
+//        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Formulaire
@@ -69,7 +70,7 @@ public class ViewReservation extends JFrame {
 
     private void fetchAndDisplayReservations() {
         // Utiliser le service pour récupérer la liste des réservations depuis la base de données
-        ServiceReservation reservationService = new ReservationServiceImpl();
+        ReservationServiceImpl reservationService = new ReservationServiceImpl();
         List<Reservation> reservationList = reservationService.getAllReservations();
 
         // Effacer le tableau actuel
@@ -77,8 +78,9 @@ public class ViewReservation extends JFrame {
 
         // Ajouter les réservations à la table avec des boutons "Modifier" et "Supprimer"
         for (Reservation reservation : reservationList) {
-            tableModel.addRow(new Object[]{reservation.getTrajet().getTrajetId(),
-                    reservation.getClient().getClientId(), reservation.getNumeroSiege(),
+            tableModel.addRow(new Object[]{reservation.getTrajet(),
+                    reservation.getClient(),
+                    reservation.getNumeroSiege(),
                     reservation.isPaye(), reservation});
         }
         // Désactiver le bouton "Ajouter" lors de la mise à jour
@@ -87,11 +89,29 @@ public class ViewReservation extends JFrame {
 
     private JPanel createAddPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Ajouter une Réservation"));
+        panel.setPreferredSize(new Dimension(710, 400));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setBorder(new TitledBorder("GESTION RESERVATION"));
+        
+     // Ajout du titre descriptif
+        JLabel titleLabel = new JLabel("GESTION RESERVATION");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Ajustez la taille de la police si nécessaire
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+        titlePanel.add(Box.createVerticalStrut(10));
+        titlePanel.add(titleLabel);
+        titlePanel.add(Box.createVerticalStrut(10));
+
+        // ...
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(titlePanel);
 
         JPanel row1 = new JPanel();
         row1.add(new JLabel("Numéro de Siège : "));
-        textNumeroSiege = new JTextField(40);
+        textNumeroSiege = new JTextField(36);
         row1.add(textNumeroSiege);
 
         JPanel row2 = new JPanel();
@@ -103,12 +123,12 @@ public class ViewReservation extends JFrame {
         row3.add(new JLabel("Trajet : "));
         textTrajet = new JTextField(46);
         row3.add(textTrajet);
-        
+
         JPanel row4 = new JPanel();
         row4.add(new JLabel("Client : "));
         textClient = new JTextField(46);
         row4.add(textClient);
-        
+
         btnAdd = new JButton("Ajouter");
         btnUpdate = new JButton("Modifier");
 
@@ -151,17 +171,22 @@ public class ViewReservation extends JFrame {
     }
 
     private void addReservation() {
-        // Récupérer les données depuis les champs de texte
-        int numeroSiege = Integer.parseInt(textNumeroSiege.getText());
-        boolean paye = Boolean.parseBoolean(textPaye.getText());
+    	 // Récupérer les données depuis les champs de texte
+    	 String trajetId = textTrajet.getText();
+         String clientId = textClient.getText();
+         String numeroSiege = textNumeroSiege.getText();
+         String paye = textPaye.getText();
+         
+         // Créer un nouveau Reservation
+         Reservation newReservation = new Reservation();
+         newReservation.setTrajetId(trajetId);
+         newReservation.setClient(clientId);
+         newReservation.setNumeroSiege(numeroSiege);
+         newReservation.setPaye(paye);
+         
 
-        // Créer un nouveau trajet et un nouveau client (pour les fins de démonstration)
-        Trajet trajet = new Trajet(1L, new Bus(), "Ville1", "Ville2", "2023-01-01", "12:00", 30);
-        Client client = new Client(1L, "John", "Doe", "123456789", "1234567890", "CODE123");
 
         // Créer une nouvelle réservation
-        Reservation newReservation = new Reservation(null, trajet, client, numeroSiege, paye);
-
         // Utiliser le service pour sauvegarder la nouvelle réservation dans la base de données
         ReservationServiceImpl reservationService = new ReservationServiceImpl();
         reservationService.saveReservation(newReservation);
@@ -190,8 +215,8 @@ public class ViewReservation extends JFrame {
         Reservation selectedReservation = reservationList.get(selectedRow);
 
         // Mettre à jour les données de la réservation
-        selectedReservation.setNumeroSiege(numeroSiege);
-        selectedReservation.setPaye(paye);
+//        selectedReservation.setNumeroSiege(numeroSiege);
+//        selectedReservation.setPaye(paye);
 
         // Utiliser le service pour mettre à jour la réservation dans la base de données
         ReservationServiceImpl reservationService = new ReservationServiceImpl();

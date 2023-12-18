@@ -97,13 +97,6 @@
 //}
 package serviceImplementation;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -111,25 +104,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-
 import ConfigDatabase.Databases;
 import entite.Bus;
 import service.ServiceBus;
-import serviceImplementation.BusServiceImpl;
 
 public class BusServiceImpl implements ServiceBus {
 	 @Override
@@ -165,8 +142,9 @@ public class BusServiceImpl implements ServiceBus {
 	        return null;
 	    }
 
-		
-		 public List<Bus> getAllBuses() {
+
+		 @Override
+		public List<Bus> getAllBuses() {
 		        List<Bus> busList = new ArrayList<>();
 		        String sql = "SELECT * FROM Bus";
 		        try (Connection connection = Databases.getConnection();
@@ -184,48 +162,62 @@ public class BusServiceImpl implements ServiceBus {
 		        }
 		        return busList;
 		    }
-		 
+//
+//		 @Override
+//		 public void updateBus(Bus bus) {
+//		     String sql = "UPDATE Bus SET nom = ?, description = ?, etat = ? WHERE busId = ?";
+//		     Connection connection = null; // Déclaration de la connexion à l'extérieur du bloc try
+//
+//		     try {
+//		         connection = Databases.getConnection(); // Initialisation de la connexion
+//                  
+//		         // Démarrer une transaction
+//		         connection.setAutoCommit(false);
+//
+//		         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//		             preparedStatement.setString(1, bus.getNom());
+//		             preparedStatement.setString(2, bus.getDescription());
+//		             preparedStatement.setString(3, bus.getEtat());
+//		             preparedStatement.setLong(4, bus.getBusId());
+//		             preparedStatement.executeUpdate();
+//		         }
+//
+//		         // Valider la transaction
+//		         connection.commit();
+//		     } catch (SQLException e) {
+//		         // En cas d'erreur, annuler la transaction
+//		         e.printStackTrace();
+//		         try {
+//		             if (connection != null) {
+//		                 connection.rollback();
+//		             }
+//		         } catch (SQLException rollbackException) {
+//		             rollbackException.printStackTrace();
+//		         }
+//		     } finally {
+//		         // Assurer que la connexion est toujours fermée même en cas d'erreur
+//		         try {
+//		             if (connection != null) {
+//		                 connection.setAutoCommit(true);
+//		                 connection.close();
+//		             }
+//		         } catch (SQLException closeException) {
+//		             closeException.printStackTrace();
+//		         }
+//		     }
+//		 }
 		 @Override
 		 public void updateBus(Bus bus) {
 		     String sql = "UPDATE Bus SET nom = ?, description = ?, etat = ? WHERE busId = ?";
-		     Connection connection = null; // Déclaration de la connexion à l'extérieur du bloc try
-		     
-		     try {
-		         connection = Databases.getConnection(); // Initialisation de la connexion
-
-		         // Démarrer une transaction
-		         connection.setAutoCommit(false);
-
-		         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-		             preparedStatement.setString(1, bus.getNom());
-		             preparedStatement.setString(2, bus.getDescription());
-		             preparedStatement.setString(3, bus.getEtat());
-		             preparedStatement.setLong(4, bus.getBusId());
-		             preparedStatement.executeUpdate();
-		         }
-
-		         // Valider la transaction
-		         connection.commit();
+		     try (Connection connection = Databases.getConnection();
+		          PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+		         preparedStatement.setString(1, bus.getNom());
+		         preparedStatement.setString(2, bus.getDescription());
+		         preparedStatement.setString(3, bus.getEtat());
+		         preparedStatement.setLong(4, bus.getBusId());
+		         preparedStatement.executeUpdate();
 		     } catch (SQLException e) {
-		         // En cas d'erreur, annuler la transaction
 		         e.printStackTrace();
-		         try {
-		             if (connection != null) {
-		                 connection.rollback();
-		             }
-		         } catch (SQLException rollbackException) {
-		             rollbackException.printStackTrace();
-		         }
-		     } finally {
-		         // Assurer que la connexion est toujours fermée même en cas d'erreur
-		         try {
-		             if (connection != null) {
-		                 connection.setAutoCommit(true);
-		                 connection.close();
-		             }
-		         } catch (SQLException closeException) {
-		             closeException.printStackTrace();
-		         }
 		     }
 		 }
 
@@ -240,6 +232,9 @@ public class BusServiceImpl implements ServiceBus {
 		        } catch (SQLException e) {
 		            e.printStackTrace();
 		        }
+		        
 		    }
+		
 }
+
 

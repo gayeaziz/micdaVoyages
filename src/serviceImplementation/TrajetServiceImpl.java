@@ -12,15 +12,16 @@ import entite.Trajet;
 import service.ServiceTrajet;
 
 public class TrajetServiceImpl  implements ServiceTrajet{
-	
-	
+
+
 	@Override
 	public Trajet saveTrajet(Trajet trajet) {
-		String sql = "INSERT INTO Trajet ( bus, villeDepart, villeArrivee, dateDepart, heureDepart, placesTotales)"
+		String sql = "INSERT INTO Trajet ( busId, villeDepart, villeArrivee, dateDepart, heureDepart, placesTotales)"
 				+ " VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = Databases.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        	preparedStatement.setNString(1, trajet.getBus());
+        	 Long busId = trajet.getBusId();
+        	 preparedStatement.setLong(1, (busId != null) ? busId.longValue() : 0); 
             preparedStatement.setString(2, trajet.getVilleDepart());
             preparedStatement.setString(3, trajet.getVilleArrivee());
             preparedStatement.setString(4, trajet.getDateDepart());
@@ -42,10 +43,10 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	@Override
 	public void updateTrajet(Trajet trajet) {
 		// TODO Auto-generated method stub
-		 String sql = "UPDATE Trajet SET bus = ?, villeDepart = ?, villeArrivee = ? , dateDepart = ? "
+		 String sql = "UPDATE Trajet SET busId = ?, villeDepart = ?, villeArrivee = ? , dateDepart = ? "
 		 		+ " , heureDepart = ? , placesTotales = ? WHERE busId = ?";
 	     Connection connection = null; // Déclaration de la connexion à l'extérieur du bloc try
-	     
+
 	     try {
 	         connection = Databases.getConnection(); // Initialisation de la connexion
 
@@ -53,7 +54,7 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	         connection.setAutoCommit(false);
 
 	         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-	             preparedStatement.setNString(1, trajet.getBus());
+	             preparedStatement.setLong(1, trajet.getBusId());
 	             preparedStatement.setString(2, trajet.getVilleDepart());
 	             preparedStatement.setString(3, trajet.getVilleArrivee());
 	             preparedStatement.setString(4, trajet.getDateDepart());
@@ -86,7 +87,7 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	             closeException.printStackTrace();
 	         }
 	     }
-		
+
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	            e.printStackTrace();
 	        }
 	    }
-		
+
 
 	@Override
 	public List<Trajet> getAllTrajetes() {
@@ -112,7 +113,7 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	        while (resultSet.next()) {
 	            Trajet trajet = new Trajet(
 	                    resultSet.getLong("trajetId"),
-	                    resultSet.getString("bus"),
+	                    resultSet.getLong("busId"),
 	                    resultSet.getString("villeDepart"),
 	                    resultSet.getString("villeArrivee"),
 	                    resultSet.getString("dateDepart"),
@@ -127,6 +128,11 @@ public class TrajetServiceImpl  implements ServiceTrajet{
 	    return trajetList;
 	}
 
-	
-	
+	public Trajet getTrajetByNom(String selectedTrajetNom) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 }

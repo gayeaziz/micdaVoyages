@@ -12,14 +12,14 @@ import entite.Client;
 import service.ServiceClient;
 
 public class ClientServiceImpl implements ServiceClient{
-	
+
 	@Override
 	public Client saveClient(Client client) {
 		String sql = "INSERT INTO Client ( prenom, nom, numeroIdentite, telephone, codePaiement)"
 				+ " VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = Databases.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        	preparedStatement.setNString(1, client.getPrenom());
+        	preparedStatement.setString(1, client.getPrenom());
             preparedStatement.setString(2, client.getNom());
             preparedStatement.setString(3, client.getNumeroIdentite());
             preparedStatement.setString(4, client.getTelephone());
@@ -30,7 +30,7 @@ public class ClientServiceImpl implements ServiceClient{
         }
         return client;
     }
-    
+
 	@Override
 	public Client getClientById(Long clientId) {
 		// TODO Auto-generated method stub
@@ -95,7 +95,7 @@ public class ClientServiceImpl implements ServiceClient{
 	            e.printStackTrace();
 	        }
 	    }
-		
+
 
 	@Override
 	public List<Client> getAllClientes() {
@@ -121,9 +121,49 @@ public class ClientServiceImpl implements ServiceClient{
 
 	@Override
 	public void updateClient(Client client) {
-		// TODO Auto-generated method stub
-		
+		String sql = "UPDATE Client SET prenom = ?, nom = ?, numeroIdentite = ? , telephone = ?, codePaiement = ? WHERE clientId = ?";
+	     Connection connection = null; // Déclaration de la connexion à l'extérieur du bloc try
+	    
+	     try {
+	         connection = Databases.getConnection(); // Initialisation de la connexion
+
+	         // Démarrer une transaction
+	         connection.setAutoCommit(false);
+
+	         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+	             preparedStatement.setString(1, client.getPrenom());
+	             preparedStatement.setString(2, client.getNom());
+	             preparedStatement.setString(3, client.getNumeroIdentite());
+	             preparedStatement.setString(4, client.getTelephone());
+	             preparedStatement.setString(5, client.getCodePaiement());
+	             preparedStatement.setLong(6, client.getClientId());
+	             preparedStatement.executeUpdate();
+	         }
+
+	         // Valider la transaction
+	         connection.commit();
+	     } catch (SQLException e) {
+	         // En cas d'erreur, annuler la transaction
+	         e.printStackTrace();
+	         try {
+	             if (connection != null) {
+	                 connection.rollback();
+	             }
+	         } catch (SQLException rollbackException) {
+	             rollbackException.printStackTrace();
+	         }
+	     } finally {
+	         // Assurer que la connexion est toujours fermée même en cas d'erreur
+	         try {
+	             if (connection != null) {
+	                 connection.setAutoCommit(true);
+	                 connection.close();
+	             }
+	         } catch (SQLException closeException) {
+	             closeException.printStackTrace();
+	         }
+	     }
 	}
-	
-	
+
+
 }

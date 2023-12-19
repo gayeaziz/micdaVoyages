@@ -26,7 +26,13 @@ public class Client {
         this.codePaiement = codePaiement;
     }
 
-    public Client(long long1) {
+  
+
+	public Client() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Client(long long1) {
 		// TODO Auto-generated constructor stub
 	}
 
